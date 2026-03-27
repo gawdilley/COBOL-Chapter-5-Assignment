@@ -122,6 +122,23 @@
            05 FILLER PIC X(15) VALUE "PERCENT        ".
            05 FILLER PIC X(20) VALUE SPACE.
 
+       01  DASH-LINE.
+           05 FILLER PIC X(6)  VALUE "------".
+           05 FILLER PIC X(2)  VALUE SPACES.
+           05 FILLER PIC X(6)  VALUE "------".
+           05 FILLER PIC X(2)  VALUE SPACES.
+           05 FILLER PIC X(6) VALUE "------".
+           05 FILLER PIC X(2)  VALUE SPACES.
+           05 FILLER PIC X(25) VALUE "--------------------".
+           05 FILLER PIC X(3)  VALUE SPACES.
+           05 FILLER PIC X(13) VALUE "-------------".
+           05 FILLER PIC X(3)  VALUE SPACES.
+           05 FILLER PIC X(13) VALUE "-------------".
+           05 FILLER PIC X(3)  VALUE SPACES.
+           05 FILLER PIC X(13) VALUE "-------------".
+           05 FILLER PIC X(3)  VALUE SPACES.
+           05 FILLER PIC X(13) VALUE "-------------".
+
        01  CUSTOMER-LINE.
            05 FILLER                 PIC X(1)  VALUE SPACE.
            05 CL-BRANCH-NUMBER       PIC X(2).
@@ -130,7 +147,7 @@
            05 FILLER                 PIC X(4)  VALUE SPACES.
            05 CL-CUSTOMER-NUMBER     PIC 9(5).
            05 FILLER                 PIC X(3)  VALUE SPACES.
-           05 CL-CUSTOMER-NAME       PIC X(20).
+           05 CL-CUSTOMER-NAME       PIC X(25).
            05 FILLER                 PIC X(3)  VALUE SPACES.
            05 CL-SALES-THIS-YTD      PIC Z,ZZZ,ZZ9.99.
            05 FILLER                 PIC X(3)  VALUE SPACES.
@@ -142,7 +159,7 @@
            05 FILLER                 PIC X(31) VALUE SPACES.
 
        01  SALESREP-TOTAL-LINE.
-           05 FILLER                 PIC X(25) VALUE SPACES.
+           05 FILLER                 PIC X(32) VALUE SPACES.
            05 FILLER                 PIC X(14) VALUE "SALESREP TOTAL".
            05 SRTL-SALES-THIS-YTD    PIC Z,ZZZ,ZZ9.99.
            05 FILLER                 PIC X(3)  VALUE SPACES.
@@ -156,7 +173,7 @@
            05 FILLER                 PIC X(36) VALUE SPACES.
 
        01  BRANCH-TOTAL-LINE.
-           05 FILLER                 PIC X(27) VALUE SPACES.
+           05 FILLER                 PIC X(32) VALUE SPACES.
            05 FILLER                 PIC X(12) VALUE "BRANCH TOTAL".
            05 BTL-SALES-THIS-YTD     PIC Z,ZZZ,ZZ9.99.
            05 FILLER                 PIC X(3)  VALUE SPACES.
@@ -277,7 +294,6 @@
                        MOVE 999.9 TO CL-CHANGE-PERCENT
                END-COMPUTE
            END-IF.
-
            MOVE CUSTOMER-LINE TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
            PERFORM 350-WRITE-REPORT-LINE.
@@ -290,8 +306,10 @@
        330-PRINT-HEADING-LINES.
            ADD 1 TO PAGE-COUNT.
            MOVE PAGE-COUNT TO HL1-PAGE-NUMBER.
+
            MOVE HEADING-LINE-1 TO PRINT-AREA.
            PERFORM 340-WRITE-PAGE-TOP-LINE.
+
            MOVE HEADING-LINE-2 TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
            PERFORM 350-WRITE-REPORT-LINE.
@@ -301,8 +319,12 @@
            MOVE HEADING-LINE-4 TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
            PERFORM 350-WRITE-REPORT-LINE.
+
+           MOVE DASH-LINE TO PRINT-AREA.
+           MOVE 1 TO SPACE-CONTROL.
+           PERFORM 350-WRITE-REPORT-LINE.
            MOVE ZERO TO LINE-COUNT.
-           MOVE 2 TO SPACE-CONTROL.
+           MOVE 1 TO SPACE-CONTROL.
 
        340-WRITE-PAGE-TOP-LINE.
            WRITE PRINT-AREA.
@@ -336,6 +358,7 @@
        360-PRINT-BRANCH-LINE.
            MOVE BRANCH-TOTAL-THIS-YTD TO BTL-SALES-THIS-YTD.
            MOVE BRANCH-TOTAL-LAST-YTD TO BTL-SALES-LAST-YTD.
+
            COMPUTE CHANGE-AMOUNT =
                BRANCH-TOTAL-THIS-YTD - BRANCH-TOTAL-LAST-YTD.
            MOVE CHANGE-AMOUNT TO BTL-CHANGE-AMOUNT.
@@ -351,7 +374,9 @@
            MOVE BRANCH-TOTAL-LINE TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
            PERFORM 350-WRITE-REPORT-LINE.
-           MOVE 2 TO SPACE-CONTROL.
+           MOVE SPACES TO PRINT-AREA.
+           MOVE 1 TO SPACE-CONTROL.
+           PERFORM 350-WRITE-REPORT-LINE.
            ADD BRANCH-TOTAL-THIS-YTD TO GRAND-TOTAL-THIS-YTD.
            ADD BRANCH-TOTAL-LAST-YTD TO GRAND-TOTAL-LAST-YTD.
            MOVE ZERO TO BRANCH-TOTAL-THIS-YTD.
